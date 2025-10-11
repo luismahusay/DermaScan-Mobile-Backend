@@ -14,22 +14,22 @@ const PORT = process.env.PORT || 8080;
 const PAYMONGO_SECRET_KEY = process.env.PAYMONGO_SECRET_KEY;
 const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
 
-// ✅ NEW: Checkout API endpoint
+// Checkout API endpoint
 app.post("/dermascan/subscription-payment", async (req, res) => {
   try {
     const { plan, method, amount } = req.body;
 
     if (!plan || !method || !amount) {
-    return res.status(400).json({
-      status: "error",
-      message: "Missing required fields",
-    });
+      return res.status(400).json({
+        status: "error",
+        message: "Missing required fields",
+      });
     }
 
     // Convert amount to centavos (PayMongo uses smallest currency unit)
     const amountInCentavos = Math.round(parseFloat(amount) * 100);
 
-    // ✅ Normalize the method before validation
+    // Normalize the method before validation
     const normalizedMethod = method === "maya" ? "paymaya" : method;
 
     // Validate supported methods
@@ -41,7 +41,7 @@ app.post("/dermascan/subscription-payment", async (req, res) => {
       });
     }
 
-    // ✅ Create Checkout Session (preferred way)
+    // Create Checkout Session
     const checkoutResponse = await axios.post(
       "https://api.paymongo.com/v1/checkout_sessions",
       {
@@ -58,7 +58,7 @@ app.post("/dermascan/subscription-payment", async (req, res) => {
                 quantity: 1,
               },
             ],
-            payment_method_types: [method === "maya" ? "paymaya" : method],
+            payment_method_types: [normalizedMethod],
             redirect: {
               success: `${BASE_URL}/dermascan/payment-success`,
               failed: `${BASE_URL}/dermascan/payment-failed`,
@@ -92,13 +92,13 @@ app.post("/dermascan/subscription-payment", async (req, res) => {
 
 // Simple landing pages
 app.get("/dermascan/payment-success", (req, res) => {
-  res.send("✅ Payment Success! You can now access premium features.");
+  res.send("Payment Success! You can now access premium features.");
 });
 
 app.get("/dermascan/payment-failed", (req, res) => {
-  res.send("❌ Payment Failed. Please try again.");
+  res.send("Payment Failed. Please try again.");
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Dermascan backend running at http://localhost:${PORT}`);
+  console.log(`Dermascan backend running at http://localhost:${PORT}`);
 });
