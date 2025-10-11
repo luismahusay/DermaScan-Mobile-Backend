@@ -12,6 +12,7 @@ app.use(bodyParser.json());
 
 const PORT = process.env.PORT || 8080;
 const PAYMONGO_SECRET_KEY = process.env.PAYMONGO_SECRET_KEY;
+const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
 
 // ✅ NEW: Checkout API endpoint
 app.post("/dermascan/subscription-payment", async (req, res) => {
@@ -59,8 +60,8 @@ app.post("/dermascan/subscription-payment", async (req, res) => {
             ],
             payment_method_types: [method === "maya" ? "paymaya" : method],
             redirect: {
-              success: "http://localhost:8080/dermascan/payment-success",
-              failed: "http://localhost:8080/dermascan/payment-failed",
+              success: `${BASE_URL}/dermascan/payment-success`,
+              failed: `${BASE_URL}/dermascan/payment-failed`,
             },
           },
         },

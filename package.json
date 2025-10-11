@@ -1,7 +1,7 @@
 {
   "name": "paymongo-source-payment",
   "version": "1.0.0",
-  "description": "Secure PayMongo Source API",
+  "description": "subscription",
   "main": "dermascan-backend.js",
   "scripts": {
     "start": "node dermascan-backend.js"
